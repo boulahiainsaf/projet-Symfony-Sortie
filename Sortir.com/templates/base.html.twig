@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Sortir.com{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+                    <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/media/tab.css') }}">
+
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,900;1,200&display=swap" rel="stylesheet">
+        {% endblock %}
+        <link rel="icon" href="{{ asset('img/favicon.png') }}">
+    </head>
+    <body>
+    <div class="body-wrapper">
+        <header>
+            <a href="{{ path('app_sortie') }}"><img id="page-logo" src="{{ asset('img/logo_nav_landscape_light.png') }}" alt="Sortir.com" ></a>
+            {% include('inc/_nav.html.twig') %}
+        </header>
+        {# read and display all flash messages #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }} alert-dismissible" id="flash-msg">
+                    {{ message }}
+                    <button type="button" id="close-flash" class="close" data-dismiss="flash" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <main>
+        {% block body %}{% endblock %}
+        {% block javascripts %}
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+            <script src="{{ asset('js/responsive.js') }}"></script>
+            <script src="{{ asset('js/dashboard.js') }}"></script>
+            {{ encore_entry_script_tags('app') }}
+             <script>
+                jQuery(document).ready(function ($){
+                    setTimeout(function(){
+                        $(".flash").fadeOut("slow");
+                    }, 5000)
+                });
+            </script>
+
+        {% endblock %}
+        </main>
+    </div>
+       </body>
+</html>

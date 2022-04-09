@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Campus | {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class="campus">
+        <h2>Gérer les campus</h2>
+
+        <h4>Filtrer les sites</h4>
+        <section class="sorties-list">
+            <div class="form-field">
+                {{ form_start(campusForm) }}
+                {{ form_widget(campusForm, {'attr': {'class':'search-campus'}}) }}
+                <button class="btn">Rechercher</button>
+                {{ form_end(campusForm) }}
+            </div>
+            <div id="table-scroll-campus">
+                <table id="campus-list-table">
+                    {% if campus %}
+
+                        <tr>
+                            <th>Campus</th>
+                            <th style="min-width:160px;">Actions</th>
+                        </tr>
+                        {% for c in campus %}
+                            <tr>
+                                <td class="nom_campus" id="nom_campus_{{ c.id }}">{{ c.nom }}</td>
+
+                                <td class="link_modifier" id="{{ c.id }}"><a href="#">Modifier</a> -
+                                    <a href="{{ path('admin_campus_supprimer', {'id':c.id}) }}">Supprimer</a></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <td>Aucun campus correspond à votre recherche</td>
+                    {% endif %}
+                    <tr>
+                        {{ form_start(ajouterCampusForm) }}
+                        <td>
+                            {{ form_widget(ajouterCampusForm) }}</td>
+                        <td>
+                            <button class="ajouter-campus-btn" type="submit">Ajouter</button>
+                        </td>
+                        {{ form_end(ajouterCampusForm) }}
+                    </tr>
+                </table>
+
+
+            </div>
+        </section>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        window.onload = () => {
+
+
+            //click sur modifier
+            let linkModif = document.querySelectorAll('.link_modifier');
+            linkModif.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    const idCampus = e.currentTarget.id;
+                    const idNomCampus = 'nom_campus_' + idCampus;
+                    let nomCampus = document.getElementById(idNomCampus).innerText;
+
+                    e.currentTarget.innerHTML = '';
+
+                    document.getElementById(idNomCampus).innerHTML =
+                        `<form name="campus" method="post">
+<input name="idCampus" value="${idCampus}" hidden type="text">
+                        <input name="nomCampus" value="${nomCampus}" type="text" placeholder="le nom du campus est...">
+                        <button value="Modifier le nom du campus" class="btn" type="submit" name="modifier">Valider modification</button>
+<!--                        <button value="Modifier le nom du campus" class="btn" type="submit" name="modifier"><a href="modifier/${idCampus}">Valider modification</a></button>-->
+                        </form>`;
+
+                    // alert(e.currentTarget.value);
+                })
+            });
+
+
+        }
+    </script>
+
+{% endblock %}
+
+

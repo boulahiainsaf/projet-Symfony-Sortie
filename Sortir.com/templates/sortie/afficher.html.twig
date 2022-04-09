@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Details sortie {{ sortie.id }}| {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="afficher-sortie">
+        <h2>Afficher une sortie</h2>
+        {% if is_mobile_view() %}
+        {% include('inc/_sortieInfo.html.twig') %}
+    {% else %}
+        <div class="afficher-sortie-grid">
+
+            <div class="afficher-sortie-col">
+                <dl class="formatted">
+                    <dt>Nom de la sortie:</dt>
+                    <dd>{{ sortie.nom }}</dd>
+                    <dt>Date et heure de la sortie :</dt>
+                    <dd>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}h</dd>
+                    <dt>Date limite inscription :</dt>
+                    <dd>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</dd>
+                    <dt>Nombre de places :</dt>
+                    <dd>{{ sortie.nbInscriptionsMax - sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</dd>
+                    <dt> Durée :</dt>
+                    <dd>{{ sortie.duree }} minutes</dd>
+                    <dt> Description et infos : </dt>
+                    <dd>{{ sortie.infosSortie | raw}}</dd>
+                </dl>
+            </div>
+            <div class="afficher-sortie-col">
+                <dl class="formatted">
+                    <dt> Campus :</dt>
+                    <dd> {{ sortie.campus.nom }}</dd>
+                    <dt>  Lieu : </dt>
+                    <dd>{{ sortie.lieu.nom }}</dd>
+                    <dt> Rue : </dt>
+                    <dd> {{ sortie.lieu.rue }} </dd>
+                    <dt>  Code Postal :</dt>
+                    <dd>{{ sortie.lieu.ville.codePostal }} </dd>
+                    <dt>  Latitude : </dt>
+                    <dd>{{ sortie.lieu.latitude }}</dd>
+                    <dt>  Longitude : </dt>
+                    <dd>{{ sortie.lieu.longitude }}</dd>
+                </dl>
+            </div>
+
+         </div>
+        {% endif %}
+        <section class="sorties-list">
+            <h4>Liste de participants inscrits : </h4>
+            {% if participants %}
+                <div id="table-scroll-participants">
+
+                <table id="participants-list-table">
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Nom</th>
+
+                    </tr>
+                    {% for p in participants %}
+                        <tr>
+                            <td >{{ p.pseudo }}</td>
+                            <td>{{ p.prenom}} {{ p.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% else %}
+                <div id="table-no-data">Rien à afficher!</div>
+
+
+                </div>     {% endif %}
+        </section>
+        {#        <div id="create-sortie-accueil">#}
+        {#            <button class="btn"><a href="{{ path('app_sortie') }}">Retour</a></button>#}
+        {#        </div>#}
+    </div>
+{% endblock %}
+

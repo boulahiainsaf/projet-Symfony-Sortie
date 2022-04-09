@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="campus">
+        <h2>Gérer les villes</h2>
+        <h4>Filtrer les villes</h4>
+        <section class="sorties-list">
+            <div class="form-field">
+                {{ form_start(villesForm) }}
+                {{ form_widget(villesForm, {'attr': {'class':'search-campus'}}) }}
+                <button class="btn">Rechercher</button>
+                {{ form_end(villesForm) }}
+            </div>
+            {% if villes %}
+                <div id="table-scroll-campus">
+
+                <table id="campus-list-table">
+                    <tr>
+                        <th>Ville</th>
+                        <th>Code Postal</th>
+                        <th style="min-width:160px;">Actions</th>
+
+                    </tr>
+                    {% for v in villes %}
+                        <tr>
+                            <td class="nom_ville" id="nom_ville_{{ v.id }}">{{ v.nom }}</td>
+                            <td class="code_postal" id="code_postal_{{ v.id }}">{{ v.codePostal }}</td>
+                            <td><a class="link_modifier" id="{{ v.id }}" href="#">Modifier</a> -
+                                <a href="{{ path('admin_villes_supprimer', {'id':v.id}) }}">Supprimer</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        {{ form_start(ajouterVilleForm) }}
+                        <td>{{form_row(ajouterVilleForm.nom)}}</td>
+                        <td>{{form_row(ajouterVilleForm.codePostal)}}</td>
+                        <td>
+                            <button class="ajouter-campus-btn" type="submit">Ajouter</button>
+                        </td>
+                        {{ form_end(ajouterVilleForm) }}
+                    </tr>
+                </table>
+
+            {% else %}
+                <div id="table-no-data">Rien à afficher!</div>
+
+
+                </div>     {% endif %}
+        </section>
+    </div>
+{% endblock %}
+
+{% block title %}
+    Villes | {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        window.onload = () => {
+
+
+            //click sur modifier
+            let linkModif = document.querySelectorAll('.link_modifier');
+            linkModif.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    const idVille = e.currentTarget.id;
+                    const idNomVille = 'nom_ville_' + idVille;
+                    const idCodePostal = 'code_postal_' + idVille;
+                    let nomVille = document.getElementById(idNomVille).innerText;
+                    let codePostal = document.getElementById(idCodePostal).innerText;
+
+                    e.currentTarget.innerHTML = '';
+                    document.getElementById(idNomVille).innerHTML = ''
+                    document.getElementById(idCodePostal).innerHTML =
+                        `<form name="ville" method="post">
+<input name="nomVille" value="${nomVille}" type="text" placeholder="ecrivez le nom de la ville">
+<input name="idVille" value="${idVille}" hidden type="text">
+
+                        <input name="codePostal" value="${codePostal}" type="text" placeholder="code postal....">
+                        <button value="Modifier le nom de la ville" class="btn" type="submit" name="modifier">Valider modification</button>
+
+                        </form>`;
+
+
+                })
+            });
+
+
+        }
+    </script>
+
+{% endblock %}

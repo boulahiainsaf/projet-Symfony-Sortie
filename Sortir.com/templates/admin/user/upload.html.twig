@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }}
+    - Upload
+{% endblock %}
+
+{% block body %}
+    <div id="dashboard-wrapper">
+        <section id="left-menu-dashboard">
+            <div id="dashboard-menu-items">
+                <a href="{{ path('admin_dashboard') }}" id="admin-user-list-link" class="">Liste des utilisateurs</a>
+                <a href="{{ path('admin_addParticipant') }}" id="admin-user-add-link" class="">Ajouter un
+                    utilisateur</a>
+                <a href="{{path('admin_upload_users')}}" id="admin-user-upload-link" class="active">Ajouter des utilisateurs CSV</a>
+            </div>
+        </section>
+        <section id="dashboard-content">
+            <div class="hide" id="admin-user-list"></div>
+            <div class="hide" id="admin-user-add"></div>
+            <div class="show" id="admin-user-upload">
+                <div id="user-upload-wrapper" >
+                    {# <a href="{{ path('admin_dashboard') }}" class="text-white"> << Back </a> #}
+                    <div id="user-upload-form-wrapper" >
+                        <h2> Inscription des utilisateurs </h2>
+                        <p> depuis un fichier .csv</p>
+                        <div id="insert-indicator">
+                            {% if uploadStatus.upload is empty %}
+                                <div id="first-ind"></div>
+                            {% else %}
+                                <div id="first-ind" style="background-color: #f8ac22; border: solid #283044 3px; width: 20px; height: 20px;"></div>
+                            {% endif %}
+                            {% if uploadStatus.validate is empty %}
+                                <div id="second-ind"></div>
+                            {% else %}
+                                <div id="second-ind" style="background-color: #f8ac22; border: solid #283044 3px; width: 20px; height: 20px;"></div>
+                            {% endif %}
+                            {% if uploadStatus.save is empty %}
+                                <div id="third-ind"></div>
+                            {% else %}
+                                <div id="third-ind" style="background-color: #f8ac22; border: solid #283044 3px; width: 20px; height: 20px;"></div>
+                            {% endif %}
+                        </div>
+                        {{ form_start(usersUploadForm) }}
+
+                        {{ form_widget(usersUploadForm) }}
+                        {#  {{ form_row(usersUploadForm.upload_file) }} #}
+
+                        <button class="btn" type="submit"> Envoyer</button>
+                        {{ form_end(usersUploadForm) }}
+
+                    </div>
+                    <div id="user-upload-info">
+                        {% if readerMessage is not empty %}
+                            <hr>
+                            <div class="field-{{ readerStatus }}">
+                                {{ readerMessage | raw }}
+                            </div>
+                        {% endif %}
+                        {% if validationErrorMessage is not empty %}
+                            <hr>
+                            <div class="field-error">{{ validationErrorMessage | raw }}</div>
+                        {% endif %}
+                        {% if dbValidation is not empty %}
+                            <hr>
+                            <div class="field-error">
+                                {% for dbError in dbValidation %}
+                                    {{ dbError | raw }} <br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if dbSuccess is not empty %}
+                            <hr>
+                            <div class="field-success">
+                                {{ dbSuccess }} <br>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

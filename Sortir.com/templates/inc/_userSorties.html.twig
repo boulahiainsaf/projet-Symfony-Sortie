@@ -1,0 +1,31 @@
+<div class="mobile-container-wrapper">
+    <h3>Mes sorties</h3>
+<section class="sorties-list">
+    {% if userSortiesList %}
+        <div id="table-scroll">
+        {# afficher les sorties par campus d'un utilisateur / défaut  #}
+        <table id="sorties-list-table">
+            <tr>
+                <th class="bold">Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Lieu</th>
+            </tr>
+            {% for sortie in userSortiesList %}
+                {% if is_granted('afficher', sortie) %}
+                    <tr {% if sortie.etat.libelle is same as ('Annulée') %} class="tr-sortie-annulee" {% endif %}>
+                        <td class="bold"><a href="{{ path('app_sortie_afficher', {'id':sortie.id}) }}">{{ sortie.nom }}</a></td>
+                        <td>{{ sortie.dateHeureDebut|format_datetime('short', 'short', locale='fr') }}</td>
+                        <td>{{ sortie.lieu.nom }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% else %}
+        <div id="table-no-data">Rien à afficher!</div>
+        </div>
+    {% endif %}
+</section>
+    <div class="mobile-table-info">
+    <div class="red-square"></div> sortie annulée
+    </div>
+</div>

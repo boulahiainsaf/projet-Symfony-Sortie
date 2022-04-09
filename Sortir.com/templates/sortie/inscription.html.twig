@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h2>Confirmation inscription</h2>
+  <div>nom de la sortie: {{ sortie.nom }}</div>
+  <div>lieu : {{ sortie.lieu.nom }}</div>
+  <div>date et heure de sortie : {{ sortie.dateHeureDebut |date }}</div>
+  <div>nombre de places: {{ sortie.nbInscriptionsMax - sortie.participants.count }} / {{ sortie.nbInscriptionsMax }}</div>
+{#  {{ form_start(inscriptionForm) }}#}
+{#  {{ form_widget(inscriptionForm) }}#}
+
+  <button type="submit">Confirmer inscription</button>
+  <a href="{{ path('app_sortie') }}"> <button type="reset">Annuler</button></a>
+
+
+{#  {{ form_end(inscriptionForm) }}#}
+{% endblock %}
+
+{% block title %}
+Inscription | {{ parent() }}
+
+
+
+{% endblock %}
+

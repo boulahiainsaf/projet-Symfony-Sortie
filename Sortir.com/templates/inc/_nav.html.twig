@@ -1,0 +1,19 @@
+{% if (is_full_view() or is_tablet_view())%}
+<nav class="site-nav">
+    <ul>
+            {% if(app.user) %}
+                <li class="burger"><a href="#" title="Ouvrir menu"> <i class="fa fa-solid fa-grip-lines"></i>  MENU</a></li>
+                <li class="cross"><a href="#" title="Fermer menu"><i class="fas fa-times"></i></a></li>
+               {% if is_granted("ROLE_ADMIN") %}
+                   <li><a href="{{ path('admin_villes') }}" title="Villes">Villes</a></li>
+                   <li><a href="{{ path('admin_campus') }}" title="Campus">Campus</a></li>
+                   <li><a href="{{ path('admin_dashboard') }}" title="Admin dashboard">Dashboard</a></li>
+{#                   <li><a href="{{ path('app_create') }}" title="Campus">Créer une Sortie</a></li>#}
+                {% endif %}
+               <li><a href="{{ path('app_sortie') }}" title="Accueil">Accueil</a></li>
+               <li><a href="{{ path('participant_update' )}}" title="Mon Profil">Mon Profil</a></li> {# TODO update 32 for actually connected user #}
+               <li><a href="{{path('app_logout')}}" title="Se déconnecter">Se déconnecter</a></li>
+          {% endif %}
+    </ul>
+</nav>
+{% endif %}

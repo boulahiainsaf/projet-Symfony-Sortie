@@ -1,0 +1,32 @@
+
+<div class="afficher-sortie-grid {% if sortie.etat.libelle is same as ('Annulée') %} grid-sortie-annulee {% endif %}">
+    <div class="afficher-sortie-col">
+        <dl class="formatted">
+            <dt>Nom de la sortie:</dt>
+            <dd>{{ sortie.nom }}</dd>
+            <dt>Date et heure :</dt>
+            <dd>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</dd>
+            <dt>Ville : </dt>
+            <dd>{{ sortie.lieu.ville.nom }}</dd>
+            <dt> Lieu : </dt>
+            <dd>{{ sortie.lieu.nom }}</dd>
+            <dt> Rue : </dt>
+            <dd> {{ sortie.lieu.rue }} </dd>
+            <dt>  Code Postal :</dt>
+            <dd>{{ sortie.lieu.ville.codePostal }} </dd>
+            <dt>  Latitude : </dt>
+            <dd>{{ sortie.lieu.latitude }}</dd>
+            <dt>  Longitude : </dt>
+            <dd>{{ sortie.lieu.longitude }}</dd>
+            <dt>Clôture :</dt>
+            <dd>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</dd>
+            <dt>Nombre de places :</dt>
+            <dd>{{ sortie.nbInscriptionsMax - sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</dd>
+            <dt> Durée :</dt>
+            <dd>{{ sortie.duree }} minutes</dd>
+            <dt> Description et infos : </dt>
+            <br>
+            <p class="info-sortie-mob">{{ sortie.infosSortie | raw}}</p>
+        </dl>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {{ parent() }}
+    | Utilisateurs - Crée
+{% endblock %}
+{% block body %}
+
+    <div id="dashboard-wrapper">
+        <section id="left-menu-dashboard">
+            <div id="dashboard-menu-items">
+                <a href="{{ path('admin_dashboard') }}" id="admin-user-list-link" class="">Liste des utilisateurs</a>
+                <a href="{{ path('admin_addParticipant') }}" id="admin-user-add-link" class="active">Ajouter un
+                    utilisateur</a>
+                <a href="{{path('admin_upload_users')}}" id="admin-user-upload-link" class="">Ajouter des utilisateurs CSV</a>
+            </div>
+        </section>
+        <section id="dashboard-content">
+            <div class="hide" id="admin-user-list"></div>
+            <div class="show" id="admin-user-add">
+                <div>
+                {{ form_start(addParticipantForm) }}
+                    {{ form_widget(addParticipantForm) }}
+                    <button type="submit" class="btn">Enregistrer</button>
+                    <button type="reset" class="btn">Annuler</button>
+                    {{ form_end(addParticipantForm) }}
+
+                </div>
+
+
+
+
+
+            </div>
+            {#            <div class="show" id="admin-user-upload">{% include 'admin/inc/_upload.html.twig' %}</div> #}
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+   {% endblock %}
+
+
+
+

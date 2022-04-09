@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div id="create">
+
+        <h2>Créer une sortie</h2>
+            {{ form_start(sortieForm) }}
+            {{ form_errors(sortieForm) }}
+             <div class="row">
+                <div class="col">
+                    {{ form_row(sortieForm.nom) }}
+                    {{ form_row(sortieForm.dateHeureDebut) }}
+                    {{ form_row(sortieForm.dateLimiteInscription) }}
+                    {{ form_row(sortieForm.nbInscriptionsMax) }}
+                    {{ form_row(sortieForm.duree) }}
+                    {{ form_row(sortieForm.infosSortie) }}
+
+
+                </div>
+                <div class="col col-lg-6">
+                    <label for="sortie_campus">Campus</label>
+                    <input type="text" id="sortie_campus" name="sortie[campus]" value="{{ organisateur.campus.nom }}" disabled="disabled">
+
+
+                    {{ form_row(sortieForm.ville) }}
+                    <div>
+                        <div id="lieu1">
+                        {{form_row(sortieForm.lieu) }}
+                        </div>
+                        <div id="msga">
+
+                        </div>
+                        <div id="img">
+
+                        </div>
+                        <div id="lieu">
+                            {{ form_row(sortieForm.lieuForm) }}
+                        </div>
+                    </div>
+
+                    <div id="detaillieu"></div>
+
+                </div>
+            </div>
+
+            <div >
+            <input class="btn-sortie" type="submit" name="active" value="Enregistrer"> </input>
+            <input class="btn-sortie" type="submit" name="publier" value="Publier la sortie"> </input>
+            <button class="btn-sortie" ><a   href="{{ path('app_sortie') }}">Annuler</a></button>
+            </div>
+{{ form_end(sortieForm) }}
+</div>
+{% endblock %}
+
+{% block title %}
+Créer une sortie
+    {{ parent() }}
+{% endblock %}
+    {% block javascripts %}
+        {{ parent() }}
+        <script>
+           window.onload = () => {
+               let rue = document.getElementById("sortie_lieuForm_rue").value;
+               let nom = document.getElementById("sortie_lieuForm_nom").value;
+               let latitude = document.getElementById("sortie_lieuForm_latitude").value;
+               let longitude = document.getElementById("sortie_lieuForm_longitude").value;
+               if(!rue.length && !nom.length && !latitude.length && !longitude.length) {
+                   document.getElementById("lieu").style.display = "none";
+               }else {
+                   document.getElementById("lieu").style.display = "block";
+               }
+               const location = window.location.toString();
+               const locationBase = location.replace('create', '');  // //http://localhost/ProjetSortir/public/ (chez Elena)
+                             document.querySelector("#sortie_ville").addEventListener("change", function () {
+                                 let vil = document.getElementById("sortie_ville").value;
+                                 fetch(locationBase+'api/lieux/'+vil, {method: "GET"})
+                                     .then(response => response.json())
+                                     .then(response => {
+                                         // traiter les données
+                                         let options = ``;
+                                         response.map(lieux => {
+                                             options += `<option value="${lieux.id}">${lieux.nom}</option>`;
+                                         })
+                                         if(options.length===0){
+                                             options=`<option value="120"  >ajouter un lieu</option>`;
+                                             document.getElementById("lieu1").style.display = "none";
+                                             document.getElementById("detaillieu").style.display = "none";
+                                             var msg=`<p style="color: #B0413E"> cette ville n'a pas de lieu !!!</p>`
+                                             document.getElementById("msga").style.display = "block";
+                                         }else {
+                                             document.getElementById("lieu1").style.display = "block";
+                                             document.getElementById("detaillieu").style.display = "block";
+                                             document.getElementById("msga").style.display = "none";
+                                             var msg =``;
+                                         }
+                                         let test=`<img src="{{ asset('img/plus.png') }}" width="5%" id ="plus">`;
+
+                                         document.querySelector("#sortie_lieu").innerHTML = options;
+                                         document.querySelector("#img").innerHTML = test;
+                                         document.querySelector("#msga").innerHTML = msg;
+
+                                     })
+
+                                 setTimeout(function() {
+                                 let le = document.getElementById("sortie_lieu").value;
+                                 console.log(locationBase+'api/lieu/'+le);
+                                 fetch(locationBase+'api/lieuseul/'+le, {method: "GET"})
+                                     .then(response => response.json())
+                                     .then(response => {
+                                         let opt= `<h2>Détail de lieu sélectionné : </h2>
+                                                    <label >Rue :</label>
+                                        <input value="${response.rue}" disabled="disabled">
+                                        <label >Code postal :</label>
+                                        <input value="${response.ville.codePostal}" disabled="disabled">
+                                        <label >Latitude :</label>
+                                        <input value="${response.latitude}" disabled="disabled">
+                                        <label >Longitude :</label>
+                                        <input value="${response.longitude}" disabled="disabled">`
+                                         document.querySelector("#detaillieu").innerHTML = opt;
+
+                                     })
+                                     }, 500);
+                             })
+                document.querySelector("#sortie_lieu").addEventListener("change", function () {
+                    let le = document.getElementById("sortie_lieu").value;
+                    console.log(locationBase+'api/lieu/'+le);
+                    fetch(locationBase+'api/lieuseul/'+le, {method: "GET"})
+                        .then(response => response.json())
+                        .then(response => {
+                           let opt= `<label >Rue :</label>
+                                        <input value="${response.rue}" disabled="disabled">
+                                        <label >Code postal :</label>
+                                        <input value="${response.ville.codePostal}" disabled="disabled">
+                                        <label >Latitude :</label>
+                                        <input value="${response.latitude}" disabled="disabled">
+                                        <label >Longitude :</label>
+                                        <input value="${response.longitude}" disabled="disabled">`
+                            document.querySelector("#detaillieu").innerHTML = opt;
+
+                        })
+                        .catch(e => {
+                            alert("ERREUR");
+                        })
+                })
+               document.querySelector("#img").addEventListener("click", function (){
+
+                       document.getElementById("lieu").style.display = "block";
+                       document.getElementById("detaillieu").style.display = "none";
+
+
+               })
+            }
+        </script>
+
+
+    {% endblock %}
+

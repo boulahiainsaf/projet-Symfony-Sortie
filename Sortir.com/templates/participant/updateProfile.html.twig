@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block title %} {{ parent() }} | Mon Profil {% endblock %}
+{% block body %}
+    <div id="profile-mod-wrapper">
+        <h2>Mon profil</h2>
+        <div class="profile-gridbox">
+
+            <div class="profile-photo-div">
+                {% if participant.imageFile %}
+                    <img src="{{ asset('uploads/profileImages/' ~ participant.imageFile) }}" alt="profile picture">
+                {% else %}
+                    <img src="{{ asset('img/blank-profile-picture.png')}}" alt="profile picture">
+                {% endif %}
+
+            </div>
+            <div id="profile-form-wrapper">
+                {{ form_start(profilForm) }}
+                {{ form_widget(profilForm) }}
+
+
+                <button class="btn" type="submit"> Enregistrer</button>
+                <button class="btn" type="reset"><a href="{{ path('app_sortie') }}">Annuler</a></button>
+                {{ form_end(profilForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

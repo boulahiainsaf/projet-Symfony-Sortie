@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }}
+    - Liste
+{% endblock %}
+
+{% block body %}
+    <div id="dashboard-wrapper">
+        <div id="left-menu-dashboard">
+            <div id="dashboard-menu-items">
+                <a href="{{ path('admin_dashboard') }}" id="admin-user-list-link" class="active">Liste des utilisateurs</a>
+                <a href="{{ path('admin_addParticipant') }}" id="admin-user-add-link" class="">Ajouter un
+                    utilisateur</a>
+                <a href="{{path('admin_upload_users')}}" id="admin-user-upload-link" class="">Ajouter des utilisateurs CSV</a>
+            </div>
+        </div>
+        <div id="dashboard-content">
+            <div class="show" id="admin-user-list">
+                <div id="user-list-wrapper" >
+                    <h2> Liste des utilisateurs </h2>
+                    {{ form_start(filterForm) }}
+                    <div class="form-field">
+                        {{ form_label(filterForm.nomParticipant) }}
+                    </div>
+                    <div class="form-field" id="user-search-input">
+                    {{ form_widget(filterForm.nomParticipant) }}
+                    </div>
+                    <button class="btn" type="submit">Rechercher</button>
+                    <button class="btn" type="reset" id="user-search-reset">Reset</button>
+                    <button class="btn" type="button" id="remove-btn-all-users">Supprimer selectionnées</button>
+                    {{ form_end(filterForm) }}
+
+                    <section class="sorties-list">
+                        {% if users %}
+                            <div id="table-scroll">
+                            {# afficher les sorties par campus d'un utilisateur / défaut  #}
+                            <table id="sorties-list-table">
+                                <tr>
+                                    <th class="sticky-col" style="z-index: 101; min-width: 230px;">Pseudo</th>
+                                    <th>Prénom</th>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Teléphone</th>
+                                    <th style="width: 5%">Actif</th>
+                                    <th style="width: 5%">Admin</th>
+                                    <th style="min-width: 180px">Actions</th>
+                                </tr>
+
+                                {% for user in users %}
+                                {# {% if is_granted('afficher', user) %} #}
+                                        <tr id="user-{{ user.id }}">
+                                            <td class="bold sticky-col"><input class="checkbox-user" type="checkbox" name="checkBox[]"  id="check-{{ user.id }}" value="{{ user.id }}" data-id="{{ user.id }}"/> {{ user.pseudo }}</td>
+                                            <td>{{ user.prenom }}</td>
+                                            <td>{{ user.nom }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.telephone }}</td>
+                                            <td class="bold" id="status-{{ user.id }}">{% if user.actif %} X {% endif %}</td>
+                                            <td class="bold">{% if user.administrateur %} X {% endif %}</td>
+                                            <td>
+                                                {% if is_granted('delete', user) %}
+                                                    <a href="{{ path('admin_user_delete', {'id':user.id}) }}" class="delete-user-link" title="supprimer participant" data-id="{{ user.id }}">Supprimer</a>
+                                                {% endif %}
+                                                {% if is_granted('update_status', user) %}
+                                                    <a href="{{ path('admin_user_update_status', {'id':user.id}) }}" id="actions-{{ user.id }}" class="change-status-link" title="{% if user.actif %} Désactiver {% else %} Activer{% endif %}" data-id="{{ user.id }}"> {% if user.actif %} • Désactiver {% else %} • Activer{% endif %}</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                {# {% endif %} #}
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div class="table-no-data">Rien à afficher!</div>
+                            </div>
+                        {% endif %}
+                    </section>
+                </div>
+            </div><div class="hide" id="admin-user-add"></div>
+            <div class="hide" id="admin-user-upload">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

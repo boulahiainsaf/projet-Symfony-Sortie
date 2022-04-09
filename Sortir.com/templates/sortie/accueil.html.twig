@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+{% block title %} {{ parent() }} | Accueil {% endblock %}
+{% block body %}
+    <div id="accueil-wrapper">
+        {% if (is_full_view() or is_tablet_view())%}
+        <div id="info-user-date">
+            <p>Date du jour: {{ "now"|date("d/m/Y") }}</p>
+            <p>Participant: {{ user.pseudo }} / {{ user.campus.nom | upper }} </p>
+        </div>
+
+        <div id="filters-sorties">
+            <h3>Filter les sorties</h3>
+            <div id="filter-form-wrapper">
+                <div class="form-group">
+                    {{ form_start(filterForm) }}
+                    <div class="form-errors">
+                        {{ form_errors(filterForm) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-field" id="acc-group-campus">
+                        {{ form_label(filterForm.campus) }}
+                        {{ form_widget(filterForm.campus) }}
+                    </div>
+                    <div class="form-field" id="acc-group-search">
+                        {{ form_label(filterForm.nomSortie) }}
+                        {{ form_widget(filterForm.nomSortie) }}
+                    </div>
+                    <div class="form-field field-error show-error-accueil">
+                        {{ form_errors(filterForm.dateDebut) }}
+                        {{ form_errors(filterForm.dateFin) }}
+                    </div>
+                    <div class="form-field" id="acc-group-date">
+                        <div class=" form-field field-error hide-error-accueil">{{ form_errors(filterForm.dateDebut) }}</div>
+                        {{ form_label(filterForm.dateDebut) }}
+                        {{ form_widget(filterForm.dateDebut) }}
+                        <div class=" form-field field-error hide-error-accueil">{{ form_errors(filterForm.dateFin) }}</div>
+                        {{ form_label(filterForm.dateFin) }}
+                        {{ form_widget(filterForm.dateFin) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-field checkbox">
+                        {{ form_widget(filterForm.sortiesOrganises) }}
+                        {{ form_label(filterForm.sortiesOrganises) }}
+                    </div>
+                    <div class="form-field checkbox">
+                        {{ form_widget(filterForm.sortiesInscrites) }}
+                        {{ form_label(filterForm.sortiesInscrites) }}
+                    </div>
+                    <div class="form-field checkbox">
+                        {{ form_widget(filterForm.sortiesPasInscrites) }}
+                        {{ form_label(filterForm.sortiesPasInscrites) }}
+                    </div>
+                    <div class="form-field checkbox">
+                        {{ form_widget(filterForm.sortiesPassees) }}
+                        {{ form_label(filterForm.sortiesPassees) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn" type="submit">Rechercher</button>
+                    {{ form_end(filterForm) }}
+                </div>
+
+            </div>
+        </div>
+        <section class="sorties-list">
+            {% if displayList %}
+                <div id="table-scroll">
+                {# afficher les sorties par campus d'un utilisateur / défaut  #}
+                <table id="sorties-list-table">
+                    <tr>
+                        <th class="sticky-col" style="z-index: 101; min-width: 180px;">Nom de la sortie</th>
+                        <th>Date de la sortie</th>
+                        <th>Clôture</th>
+                        <th style="width: 10%;">Inscrits / Places</th>
+                        <th style="width: 5%">Etat</th>
+                        <th style="width: 5%;">Inscrit</th>
+                        <th>Organisateur</th>
+                        <th style="min-width: 230px;">Actions</th>
+                    </tr>
+
+                    {% for sortie in displayList %}
+{#                        {% if sortie.etat.libelle != "Créée" %}#}
+                    {% if is_granted('afficher', sortie) %}
+                            <tr>
+                                <td class="bold sticky-col">{{ sortie.nom }}</td>
+                                <td>{{ sortie.dateHeureDebut|format_datetime('short', 'short', locale='fr') }}</td>
+                                <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
+                                <td style="text-align: center">{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
+                                <td>{{ sortie.etat.libelle }}</td>
+                                <td class="bold" style="text-align: center">{% if user in sortie.participants %} X {% endif %}</td>
+                                <td>
+                                    <a href="{{ path('participant_info', {'id':sortie.organisateur.id}) }}">{{ sortie.organisateur.pseudo }}</a>
+                                </td>
+                                <td>
+                                    <a href="{{ path('app_sortie_afficher', {'id':sortie.id}) }}">Afficher</a>
+                                    {% if is_granted('inscription', sortie) %}
+                                        <a href="{{ path('app_sortie_inscription', {'id':sortie.id}) }}">• S'inscrire</a>
+                                    {% endif %}
+                                    {% if is_granted('desistement', sortie) %}
+                                        <a href="{{ path('app_sortie_desistement', {'id':sortie.id}) }} ">• Se désister</a>
+                                    {% endif %}
+                                    {% if is_granted('modifier', sortie) %}
+                                        <a href="{{ path('app_modif', {'id':sortie.id}) }}">• Modifier</a>
+                                    {% endif %}
+                                    {% if is_granted('annuler', sortie) %}
+                                        <a href="{{ path('app_sortie_annuler', {'id':sortie.id}) }}">• Annuler</a>
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="table-no-data">Rien à afficher!</div>
+
+
+                </div>     {% endif %}
+        </section>
+
+        <div id="create-sortie-accueil">
+            <button class="btn"><a href="{{ path('app_create') }}">Créer une sortie</a></button>
+        </div>
+        {% endif %}
+        {% if is_mobile_view() %}
+            {% include('inc/_userSorties.html.twig') %}
+        {% endif %}
+    </div>
+{% endblock %}

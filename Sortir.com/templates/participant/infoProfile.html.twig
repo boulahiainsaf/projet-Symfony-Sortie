@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block title %} {{ parent() }} | Profil {{ participant.pseudo }} {% endblock %}
+{% block body %}
+    <div id="profile-mod-wrapper">
+        <h2>{{ participant.pseudo }}</h2>
+        <div class="profile-gridbox">
+
+            <div class="profile-photo-div">
+                {% if participant.imageFile %}
+                    <img src="{{ asset('uploads/profileImages/' ~ participant.imageFile) }}" alt=" this profile picture">
+                {% else %}
+                    <img src="{{ asset('img/blank-profile-picture.png')}}" alt="profile picture">
+                {% endif %}
+            </div>
+            <div id="profile-form-wrapper">
+                <dl>
+                    <dt>
+                        Prénom:
+                    </dt>
+                    <dd>{{ participant.prenom }}</dd>
+
+                    <dt>
+                        Nom:
+                    </dt>
+                    <dd>{{ participant.nom }}</dd>
+                    <dt>
+                        Téléphone:
+                    </dt>
+                    <dd>{{ participant.telephone }}</dd>
+                    <dt>
+                        Email:
+                    </dt>
+                    <dd>{{ participant.email }}</dd>
+                    <dt> Campus:</dt>
+                    <dd> {{ participant.campus.nom |upper }}</dd>
+
+                </dl>
+                <button class="btn"><a href="{{ path('app_sortie') }}">Retour</a></button>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
